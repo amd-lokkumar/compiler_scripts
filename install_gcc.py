@@ -81,7 +81,7 @@ def configure_gcc(version, install_dir):
             "-v",
             f"--prefix={install_dir}",
             "--enable-checking=release",
-            "--enable-languages=c,c++",
+            "--enable-languages=c,c++,fortran",
             "--disable-multilib",
             "--program-transform-name=s/^gcc$/gcc/;s/^g++$/g++/"
         ], check=True)
