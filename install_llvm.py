@@ -23,6 +23,15 @@ def install_packages():
         print(f"Error installing packages: {e}")
         sys.exit(1)
 
+def install_environment_modules():
+    if not check_command("module"):
+        print("Installing environment-modules...")
+        try:
+            subprocess.run(["sudo", "apt", "install", "--no-install-recommends", "environment-modules", "-y"], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error installing environment-modules: {e}")
+            sys.exit(1)
+
 def download_llvm(version):
     tarball = f"llvmorg-{version}.tar.gz"
     if not os.path.isfile(tarball):
@@ -69,6 +78,7 @@ def build_llvm(install_dir):
             "-B", "llvm-project/build",
             "-DCMAKE_BUILD_TYPE=Release",
             "-DLLVM_ENABLE_PROJECTS=clang;lld;flang;openmp;clang-tools-extra",
+            "-DLLVM_FLANG_NEW_DRIVER=OFF"
         ], check=True)
 
         print("Building LLVM... This may take some time.")
@@ -103,6 +113,7 @@ set version {version}
 
 setenv CC ${{topdir}}/bin/clang
 setenv CXX ${{topdir}}/bin/clang++
+setenv FC ${{topdir}}/bin/flang
 prepend-path PATH ${{topdir}}/bin
 prepend-path LD_LIBRARY_PATH ${{topdir}}/lib
 """)
@@ -158,6 +169,9 @@ def main():
 
    # Install required packages
    install_packages()
+
+   # Install environment modules
+   install_environment_modules()
 
    # Download and extract LLVM.
    download_llvm(version)

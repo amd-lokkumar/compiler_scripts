@@ -92,7 +92,7 @@ def configure_gcc(version, install_dir):
 def compile_gcc():
     print("Compiling GCC... This may take some time.")
     try:
-        subprocess.run(["make", "-j$(nproc)"], shell=True, check=True)
+        subprocess.run(["make", "-j64"], shell=True, check=True)
     except subprocess.CalledProcessError as e:
         print(f"Compilation failed: {e}")
         sys.exit(1)
@@ -127,6 +127,7 @@ set version {version}
 
 setenv CC ${{topdir}}/bin/gcc
 setenv CXX ${{topdir}}/bin/g++
+setenv FC ${{topdir}}/bin/gfortran
 prepend-path PATH ${{topdir}}/bin
 prepend-path LD_LIBRARY_PATH ${{topdir}}/lib
 """)
